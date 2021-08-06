@@ -1,3 +1,6 @@
+# DESCRIÇÂO: Este módulo coleta dados de cotação
+
+# Importação dos modulos necessarios para a coleta dos dados
 import re
 import pandas as pd
 from bs4 import BeautifulSoup as bs
@@ -7,12 +10,10 @@ import os
 import util.loadDados as gravaDados
 
 def cotacao(soup):
-    dfCotacao = pd.DataFrame()
-    # texto = soup.get_text()
-    # Pegando as linhas da tabela 
+    # Pegando as linhas da tabela de Cotações
     info = soup.find_all(class_="TableElement")
 
-    # Tratando os dados
+    # Limpeza dos dados
     cont = 0
     lista = []
     for x in info:
@@ -22,8 +23,6 @@ def cotacao(soup):
         limpo = re.sub(clean, '|', limpo)
         clean = re.compile('<th.*?>.*?</th>')
         limpo = re.sub(clean, '', limpo)
-        # clean = re.compile('<th.*?>.*?</th>')
-        # limpo = re.sub(clean, '', limpo)
         clean = re.compile('<.*?>')
         limpo = re.sub(clean, '', limpo)
         limpo = limpo.replace('\n', '').replace('\xa0','')
@@ -36,10 +35,11 @@ def cotacao(soup):
         if len(listLinhas) > 1 and cont < 6:
             lista += listLinhas
         cont = cont + 1
-    # Tranformando o dado em Json
 
-    # data Atual
+    # Data Atual
     data_atual = (date.today())
+
+    # Cria variaveis de parametros pra salvar os dados
     anoMes = str(data_atual.year) + str(data_atual.month)
     nomeArq = 'cotacao'+anoMes+'.json'
 
@@ -75,7 +75,10 @@ def cotacao(soup):
         "Moeda":lista[40]
     }
 
-    # Salvando o Arquivo em CSV 
+    # Cria um data Frame em branco
+    dfCotacao = pd.DataFrame()
+
+    # Verifica e grava os dados
     if os.path.exists('./dados/cotacoes/'+nomeArq):
         arquivo = pd.read_json('./dados/cotacoes/'+nomeArq)
         if anoMes not in arquivo["data_atual"].values and lista[39] not in arquivo['Hora'].values:
