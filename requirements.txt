@@ -3,6 +3,3 @@ pandas
 bs4
 lxml
 unidecode
-
-urllib3
-itertool
