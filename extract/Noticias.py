@@ -1,3 +1,6 @@
+# DESCRIÇÂO: Este módulo coleta dados das noticias da empresa
+
+# Importação dos modulos necessarios para a coleta dos dados
 import re
 from unidecode import unidecode
 import util.loadDados as gravaDados
@@ -5,11 +8,10 @@ import os
 import pandas as pd
 
 def noticias(soup):
-    # Pegando as linhas da tabela 
+    # Pegando as linhas da tabela de Noticias
     info = soup.find_all(id="id_news")
 
-    # Tratando os dados
-    cont = 0
+    # Limpeza dos dados
     lista = []
     for x in info:
         x = str(x)
@@ -58,6 +60,7 @@ def noticias(soup):
                 "Link":strLink
             }
 
+            # Cria variaveis de parametros pra salvar os dados
             if os.path.exists('.dados/noticias/'+nomeArq):
                 arquivo = pd.read_json('./dados/noticia/'+nomeArq)
                 if listal[0] not in arquivo["Data"].values and listal[3] not in arquivo['Noticia'].values:

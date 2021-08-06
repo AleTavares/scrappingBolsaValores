@@ -1,6 +1,8 @@
+# DESCRIÇÂO: Este módulo  scraping da pagina informada no parametro url
+
+# Importação dos modulos necessarios para a coleta dos dados
 from bs4 import BeautifulSoup as bs
 from urllib.request import Request, urlopen
-# import requests
 
 def getScraping(url):
     # Abre a conexão com a url
@@ -10,6 +12,7 @@ def getScraping(url):
     # Extrai o código HTML
     soup = bs(html,'lxml')
 
+    # retorna o codigo html extraido
     return soup
 
 

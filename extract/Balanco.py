@@ -1,3 +1,6 @@
+# DESCRIÇÂO: Este módulo coleta dados do balanço financiero da empresa
+
+# Importação dos modulos necessarios para a coleta dos dados
 import re
 from unidecode import unidecode
 import util.loadDados as gravaDados
@@ -7,11 +10,11 @@ import pandas as pd
 
 def balanco(soup):
 
-    # Pegando as linhas da tabela 
+    # Pegando as linhas da tabela de balanço
     info = soup.find_all(class_="TableElement")
 
 
-    # Tratando os dados
+    # Limpeza dos dados
     cont = 0
     lista = []
     for x in info:
@@ -56,19 +59,22 @@ def balanco(soup):
         'PorcentagemdosControladores':lista[15]
     }
 
-    # Data e Ano Atual
+    # Data Atual
     data_atual = (date.today())
     
+    # Cria um data Frame em branco
     dfbalancos = pd.DataFrame()
 
-    # Salvando o Arquivo em JSON
+    # Cria variaveis de parametros pra salvar os dados
     nomeArq = "balanco{data}.json".format(data = str(data_atual))
     caminho = "./dados/balancos/"+nomeArq
 
+    # Verifica e grava os dados
     if os.path.exists(caminho):
         dfbalancos = pd.read_json(caminho)
         if lista[0] not in dfbalancos["ValordeMercado"].values and lista[4] not in dfbalancos['Receita'].values:
             dfbalancos = dfbalancos.append(json,ignore_index=True)
+            gravaDados.persiste('balancos', dfbalancos, nomeArq)
     else:
         dfbalancos = dfbalancos.append(json,ignore_index=True)
-    gravaDados.persiste('balancos', dfbalancos, nomeArq)
+        gravaDados.persiste('balancos', dfbalancos, nomeArq)
